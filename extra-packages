@@ -1,0 +1,11 @@
+g++-8
+gcc-8
+git
+libc6-dbg
+libffi-dev
+libgc-dev
+libsdl1.2-dev
+libsfml-dev
+libssl-dev
+make
+valgrind

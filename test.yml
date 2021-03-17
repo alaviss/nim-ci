@@ -1,0 +1,24 @@
+schemaVersion: "2.0.0"
+
+commandTests:
+  # Needed for csources
+  - name: "GNU make"
+    command: "make"
+    args: ["--version"]
+    expectedOutput: ["GNU Make"]
+
+  # Needed for JS tests and Azure Pipelines' Jobs
+  - name: "Node.js"
+    command: "node"
+    args: ["--version"]
+    expectedOutput: ["v12"]
+
+  - name: "GCC 8.4"
+    command: "gcc"
+    args: ["--version"]
+    expectedOutput: ["gcc \(.*\) 8.4"]
+
+  # Needed for 64 bit Linux leak tests
+  - name: "Valgrind"
+    command: "valgrind"
+    args: ["--version"]
