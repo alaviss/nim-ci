@@ -57,5 +57,5 @@ jobs:
           image='${{ steps.build_and_push.outputs.digest }}'
           image=${image##sha256:}
           ./container-structure-test-linux-amd64 test \
-            --image  \
+            --image "$image" \
             --config test.yml
