@@ -54,7 +54,7 @@ jobs:
           set -eu
           curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
           chmod +x container-structure-test-linux-amd64
-          image=ghcr.io/${{ github.repository_owner }}/nim-ci@${{ steps.build_and_push.outputs.digest }}
+          image=ghcr.io/${{ github.repository_owner }}/nim-ci:edge@${{ steps.build_and_push.outputs.digest }}
           ./container-structure-test-linux-amd64 test \
             --image "$image" \
             --config test.yml
