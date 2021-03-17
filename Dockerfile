@@ -1,5 +1,7 @@
 FROM docker.io/ubuntu:bionic
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Update repository and install prerequesties for node installation
 RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates curl lsb-release
 
