@@ -8,4 +8,5 @@ libsdl1.2-dev
 libsfml-dev
 libssl-dev
 make
+nodejs
 valgrind
