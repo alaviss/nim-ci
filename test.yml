@@ -18,6 +18,11 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["gcc \(.*\) 8.4"]
 
+  - name: "G++ 8.4"
+    command: "g++"
+    args: ["--version"]
+    expectedOutput: ["g\+\+ \(.*\) 8.4"]
+
   # Needed for 64 bit Linux leak tests
   - name: "Valgrind"
     command: "valgrind"
