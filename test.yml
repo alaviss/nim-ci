@@ -13,6 +13,11 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["v12"]
 
+  - name: "CC is GCC"
+    command: "cc"
+    args: ["--version"]
+    expectedOutput: ['cc \(.*\) 8.4']
+
   - name: "GCC 8.4"
     command: "gcc"
     args: ["--version"]
