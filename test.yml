@@ -37,3 +37,7 @@ fileExistenceTests:
   - name: "Protocols"
     path: "/etc/protocols"
     shouldExist: true
+
+  - name: "Timezone Data"
+    path: "/usr/share/zoneinfo"
+    shouldExist: true

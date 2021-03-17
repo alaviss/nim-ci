@@ -11,4 +11,5 @@ libssl-dev
 make
 netbase
 nodejs
+tzdata
 valgrind
