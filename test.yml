@@ -32,3 +32,8 @@ commandTests:
   - name: "Valgrind"
     command: "valgrind"
     args: ["--version"]
+
+fileExistenceTests:
+  - name: "Protocols"
+    path: "/etc/protocols"
+    shouldExist: true

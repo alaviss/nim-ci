@@ -9,5 +9,6 @@ libsdl1.2-dev
 libsfml-dev
 libssl-dev
 make
+netbase
 nodejs
 valgrind
