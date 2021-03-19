@@ -19,3 +19,5 @@ RUN rm /extra-packages
 # Set GCC 8 as the default
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8 && \
     update-alternatives --set gcc /usr/bin/gcc-8
+
+CMD ["/bin/sleep", "inf"]
