@@ -1,5 +1,5 @@
-gcc
 g++-8
+gcc
 gcc-8
 git
 libc6-dbg
