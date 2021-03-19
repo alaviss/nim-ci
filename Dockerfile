@@ -1,13 +1,13 @@
-FROM docker.io/ubuntu:bionic
+ARG RELEASE=bionic
+FROM docker.io/ubuntu:$RELEASE
+ARG RELEASE
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update repository and install prerequesties for node installation
-RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates curl lsb-release
-
 # Setup NodeJS repository
-RUN curl -o /etc/apt/trusted.gpg.d/nodesource.asc https://deb.nodesource.com/gpgkey/nodesource.gpg.key && \
-    echo "deb https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" > /etc/apt/sources.list.d/nodesource.list
+ADD https://deb.nodesource.com/gpgkey/nodesource.gpg.key /etc/apt/trusted.gpg.d/nodesource.asc
+RUN chmod 644 /etc/apt/trusted.gpg.d/nodesource.asc
+RUN echo "deb http://deb.nodesource.com/node_12.x $RELEASE main" > /etc/apt/sources.list.d/nodesource.list
 
 # Install extra packages
 COPY extra-packages /
