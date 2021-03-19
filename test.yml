@@ -41,3 +41,9 @@ fileExistenceTests:
   - name: "Timezone Data"
     path: "/usr/share/zoneinfo"
     shouldExist: true
+
+metadataTest:
+  labels:
+    # Azure Pipelines requires the path to node js to be defined.
+    - key: 'com.azure.dev.pipelines.agent.handler.node.path'
+      value: '/usr/bin/node'
