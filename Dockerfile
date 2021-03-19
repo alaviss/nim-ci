@@ -20,4 +20,4 @@ RUN rm /extra-packages
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8 && \
     update-alternatives --set gcc /usr/bin/gcc-8
 
-CMD ["/usr/bin/dumb-init", "--", "/bin/sleep", "inf"]
+CMD ["/bin/sleep", "inf"]
