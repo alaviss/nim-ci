@@ -2,7 +2,7 @@ ARG RELEASE=bionic
 FROM docker.io/ubuntu:$RELEASE
 ARG RELEASE
 
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Setup NodeJS repository
 ADD https://deb.nodesource.com/gpgkey/nodesource.gpg.key /etc/apt/trusted.gpg.d/nodesource.asc
