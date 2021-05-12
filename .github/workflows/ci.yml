@@ -13,6 +13,12 @@ jobs:
   build:
     name: Build, push and test the image
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,7 +27,9 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: ghcr.io/${{ github.repository_owner }}/nim-ci
+          images: |
+            ghcr.io/${{ github.repository_owner }}/nim-ci
+            localhost:5000/${{ github.repository_owner }}/nim-ci
           tag-edge: true
           tag-sha: true
 
@@ -45,8 +53,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
-          push: ${{ github.event_name != 'pull_request' }}
-          load: ${{ github.event_name == 'pull_request' }}
+          push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
@@ -55,7 +62,7 @@ jobs:
           set -eu
           curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
           chmod +x container-structure-test-linux-amd64
-          image=ghcr.io/${{ github.repository_owner }}/nim-ci:edge@${{ steps.build_and_push.outputs.digest }}
+          image= localhost:5000/${{ github.repository_owner }}/nim-ci:edge@${{ steps.build_and_push.outputs.digest }}
           ./container-structure-test-linux-amd64 test \
             --image "$image" --pull \
             --config test.yml
