@@ -20,18 +20,21 @@ jobs:
           - 5000:5000
     env:
       image_name: ghcr.io/${{ github.repository_owner }}/nim-ci
+      test_image: localhost:5000/test/nim-ci
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Generate metadata for the test image
-        id: docker_test_meta
+      - name: Generate metadata for the release image
+        if: github.event_name != 'pull_request'
+        id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
           images: |
-            localhost:5000/test/nim-ci
+            ${{ env.image_name }}
           tag-edge: true
+          tag-sha: true
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -49,14 +52,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
 
-      - name: Build and push
+      - name: Build and push to local registry
         id: build
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ steps.docker_test_meta.outputs.tags }}
+          tags: ${{ env.test_image }}
           labels: ${{ steps.docker_test_meta.outputs.labels }}
 
       - name: Run tests
@@ -64,27 +67,16 @@ jobs:
           set -eu
           curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
           chmod +x container-structure-test-linux-amd64
-          image=localhost:5000/test/nim-ci@${{ steps.build.outputs.digest }}
-          echo "testing $image"
+          image=$test_image@${{ steps.build.outputs.digest }}
           ./container-structure-test-linux-amd64 test \
             --image "$image" --pull \
             --config test.yml
-
-      - name: Generate metadata for the release image
-        if: github.event_name != 'pull_request'
-        id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
-        with:
-          images: |
-            ${{ env.image_name }}
-          tag-edge: true
-          tag-sha: true
 
       - name: Tag and push
         if: github.event_name != 'pull_request'
         run: |
           set -eu
-          image=localhost:5000/test/nim-ci@${{ steps.build.outputs.digest }}
+          image=$test_image@${{ steps.build.outputs.digest }}
           for tag in '${{ steps.docker_meta.outputs.tags }}'; do
             docker image tag "$image" "$tag"
           done
