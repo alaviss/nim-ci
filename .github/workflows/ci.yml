@@ -14,7 +14,7 @@ jobs:
     name: Build, push and test the image
     runs-on: ubuntu-latest
     env:
-      image_name=ghcr.io/${{ github.repository_owner }}/nim-ci
+      image_name: ghcr.io/${{ github.repository_owner }}/nim-ci
 
     steps:
       - name: Checkout
