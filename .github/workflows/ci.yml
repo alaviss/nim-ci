@@ -76,7 +76,7 @@ jobs:
         run: |
           set -eu
           image=$test_image@${{ steps.build.outputs.digest }}
-          for tag in '${{ steps.docker_meta.outputs.tags }}'; do
+          for tag in "${{ steps.docker_meta.outputs.tags }}"; do
             docker image tag "$image" "$tag"
           done
 
