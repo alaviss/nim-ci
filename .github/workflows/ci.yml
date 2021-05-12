@@ -27,7 +27,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Generate metadata for the release image
-        if: github.event_name != 'pull_request'
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
@@ -60,7 +59,7 @@ jobs:
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ env.test_image }}
-          labels: ${{ steps.docker_test_meta.outputs.labels }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: Run tests
         run: |
