@@ -64,6 +64,7 @@ jobs:
 
       - name: Load to podman and push to local registry
         run: |
+          ls
           podman load -i built.tar
           podman push "$test_image"
 
