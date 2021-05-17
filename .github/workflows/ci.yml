@@ -32,6 +32,7 @@ jobs:
         with:
           images: |
             ${{ env.image_name }}
+            ${{ env.test_image }}
           tag-edge: true
           tag-sha: true
 
@@ -51,15 +52,20 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
 
-      - name: Build and push to local registry
+      - name: Build
         id: build
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
-          push: true
-          tags: ${{ env.test_image }}
+          outputs: type=oci,dest=built.tar
+          tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+
+      - name: Load to podman and push to local registry
+        run: |
+          podman load -i built.tar
+          podman push "$test_image"
 
       - name: Run tests
         run: |
@@ -70,13 +76,3 @@ jobs:
           ./container-structure-test-linux-amd64 test \
             --image "$image" --pull \
             --config test.yml
-
-      - name: Tag and push
-        if: github.event_name != 'pull_request'
-        run: |
-          set -eu
-          image=$test_image@${{ steps.build.outputs.digest }}
-          tags='${{ steps.docker_meta.outputs.tags }}'
-          xargs <<< "$tags" -n 1 docker image tag "$image" "$tag"
-
-          docker push --all-tags "$image_name"
