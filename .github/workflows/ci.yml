@@ -68,7 +68,7 @@ jobs:
           tar tf built.tar
           mkdir built
           tar xf built.tar -C built
-          podman load -i built
+          podman pull -a oci-archive:built
           podman push "$test_image"
 
       - name: Run tests
