@@ -76,4 +76,4 @@ jobs:
           set -eu
 
           tags='${{ steps.docker_meta.outputs.tags }}'
-          xargs <<< "$tags" "-I{}" -n 1 skopeo "docker://$test_tag" "docker://{}"
+          xargs <<< "$tags" "-I{}" -n 1 skopeo copy --all "docker://$test_tag" "docker://{}"
