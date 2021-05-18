@@ -64,7 +64,6 @@ jobs:
 
       - name: Login to Github registry
         if: github.event_name != 'pull_request'
-        uses: redhat-actions/podman-login@v1
         run: |
           set -eu
 
