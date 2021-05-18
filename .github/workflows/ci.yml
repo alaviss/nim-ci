@@ -65,10 +65,10 @@ jobs:
       - name: Login to Github registry
         if: github.event_name != 'pull_request'
         uses: redhat-actions/podman-login@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+        run: |
+          set -eu
+
+          skopeo login ghcr.io -u '${{ github.repository_owner }}' -p '${{ secrets.CR_PAT }}'
 
       - name: Tag and push
         if: github.event_name != 'pull_request'
