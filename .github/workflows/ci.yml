@@ -20,7 +20,7 @@ jobs:
           - 5000:5000
     env:
       image_name: ghcr.io/${{ github.repository_owner }}/nim-ci
-      test_image: localhost:5000/test/nim-ci
+      test_tag: localhost:5000/test/nim-ci:latest
 
     steps:
       - name: Checkout
@@ -43,14 +43,6 @@ jobs:
         with:
           driver-opts: network=host
 
-      - name: Login to Github registry
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
       - name: Build and push to local registry
         id: build
         uses: docker/build-push-action@v2
@@ -58,7 +50,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ env.test_image }}
+          tags: ${{ env.test_tag }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: Run tests
@@ -66,17 +58,22 @@ jobs:
           set -eu
           curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
           chmod +x container-structure-test-linux-amd64
-          image=$test_image@${{ steps.build.outputs.digest }}
           ./container-structure-test-linux-amd64 test \
-            --image "$image" --pull \
+            --image "$test_tag" --pull \
             --config test.yml
+
+      - name: Login to Github registry
+        if: github.event_name != 'pull_request'
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: Tag and push
         if: github.event_name != 'pull_request'
         run: |
           set -eu
-          image=$test_image@${{ steps.build.outputs.digest }}
-          tags='${{ steps.docker_meta.outputs.tags }}'
-          xargs <<< "$tags" -n 1 docker image tag "$image" "$tag"
 
-          docker push --all-tags "$image_name"
+          tags='${{ steps.docker_meta.outputs.tags }}'
+          xargs <<< "$tags" "-I{}" -n 1 skopeo "docker://$test_tag" "docker://{}"
